@@ -8,8 +8,8 @@ type ScoreRingProps = {
 
 export function ScoreRing({
   score,
-  size = 116,
-  stroke = 10,
+  size = 84,
+  stroke = 8,
   color,
   label,
 }: ScoreRingProps) {
@@ -46,10 +46,10 @@ export function ScoreRing({
         />
       </svg>
       <div className="absolute flex flex-col items-center">
-        <span className="text-2xl font-bold tabular-nums text-card-foreground">
+        <span className="text-lg font-bold tabular-nums text-card-foreground">
           {score}
         </span>
-        <span className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
+        <span className="text-[9px] font-medium uppercase tracking-wide text-muted-foreground">
           из 100
         </span>
       </div>
