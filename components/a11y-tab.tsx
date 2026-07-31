@@ -1,6 +1,7 @@
 import { FileCode2, Wrench, ExternalLink } from "lucide-react"
 import type { A11yViolation } from "@/lib/audit-data"
 import { SeverityBadge } from "@/components/severity-badge"
+import { FixCheckbox } from "@/components/fix-checkbox"
 
 const levelClass: Record<A11yViolation["level"], string> = {
   A: "bg-info-soft text-info",
@@ -8,7 +9,15 @@ const levelClass: Record<A11yViolation["level"], string> = {
   AAA: "bg-accent-soft text-accent",
 }
 
-export function A11yTab({ violations }: { violations: A11yViolation[] }) {
+export function A11yTab({
+  violations,
+  selected,
+  onToggle,
+}: {
+  violations: A11yViolation[]
+  selected: Set<string>
+  onToggle: (id: string, checked: boolean) => void
+}) {
   return (
     <div className="flex flex-col gap-3">
       <div className="flex flex-col gap-0.5">
@@ -56,6 +65,12 @@ export function A11yTab({ violations }: { violations: A11yViolation[] }) {
                 </span>
               </div>
               <SeverityBadge severity={v.severity} />
+              <FixCheckbox
+                id={v.id}
+                checked={selected.has(v.id)}
+                onChange={(c) => onToggle(v.id, c)}
+                label={`Добавить правку ${v.id} в pull request`}
+              />
             </div>
 
             <p className="mt-2 text-[13px] leading-relaxed text-card-foreground">

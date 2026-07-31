@@ -16,6 +16,7 @@ import type {
   ComponentRecommendation,
 } from "@/lib/audit-data"
 import { SeverityBadge } from "@/components/severity-badge"
+import { FixCheckbox } from "@/components/fix-checkbox"
 
 const categoryConfig = {
   color: { label: "Цвет", icon: Palette },
@@ -90,9 +91,13 @@ function CollapsibleSection({
 export function DesignTab({
   violations,
   recommendations,
+  selected,
+  onToggle,
 }: {
   violations: DesignViolation[]
   recommendations: ComponentRecommendation[]
+  selected: Set<string>
+  onToggle: (id: string, checked: boolean) => void
 }) {
   return (
     <div className="flex flex-col gap-3">
@@ -135,6 +140,12 @@ export function DesignTab({
                     </span>
                   </div>
                   <SeverityBadge severity={v.severity} />
+                  <FixCheckbox
+                    id={v.id}
+                    checked={selected.has(v.id)}
+                    onChange={(c) => onToggle(v.id, c)}
+                    label={`Добавить правку ${v.id} в pull request`}
+                  />
                 </div>
 
                 <div className="mt-2 overflow-x-auto rounded-md border border-border bg-muted/60 px-2.5 py-2">
@@ -198,6 +209,12 @@ export function DesignTab({
                   </span>
                 </div>
                 <SeverityBadge severity={r.severity} />
+                <FixCheckbox
+                  id={r.id}
+                  checked={selected.has(r.id)}
+                  onChange={(c) => onToggle(r.id, c)}
+                  label={`Добавить правку ${r.id} в pull request`}
+                />
               </div>
 
               <div className="mt-2 overflow-x-auto rounded-md border border-border bg-muted/60 px-2.5 py-2">

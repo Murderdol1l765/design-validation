@@ -19,6 +19,7 @@ import {
 import { ScoreRing } from "@/components/score-ring"
 import { DesignTab } from "@/components/design-tab"
 import { A11yTab } from "@/components/a11y-tab"
+import { PrActionBar } from "@/components/pr-action-bar"
 
 type TabKey = "design" | "a11y"
 
@@ -28,6 +29,16 @@ function countBy(list: { severity: Severity }[], sev: Severity) {
 
 export function Dashboard() {
   const [tab, setTab] = useState<TabKey>("design")
+  const [selected, setSelected] = useState<Set<string>>(new Set())
+
+  function toggle(id: string, checked: boolean) {
+    setSelected((prev) => {
+      const next = new Set(prev)
+      if (checked) next.add(id)
+      else next.delete(id)
+      return next
+    })
+  }
 
   const tabs: { key: TabKey; label: string; icon: typeof Palette; count: number }[] =
     [
@@ -193,11 +204,22 @@ export function Dashboard() {
           <DesignTab
             violations={designViolations}
             recommendations={componentRecommendations}
+            selected={selected}
+            onToggle={toggle}
           />
         ) : (
-          <A11yTab violations={a11yViolations} />
+          <A11yTab
+            violations={a11yViolations}
+            selected={selected}
+            onToggle={toggle}
+          />
         )}
       </section>
+
+      <PrActionBar
+        selectedIds={Array.from(selected)}
+        onClear={() => setSelected(new Set())}
+      />
 
       <p className="sr-only" aria-live="polite">
         Показан раздел: {tab === "design" ? tabs[0].label : tabs[1].label},{" "}
