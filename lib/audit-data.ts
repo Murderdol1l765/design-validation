@@ -10,6 +10,22 @@ export type DesignViolation = {
   expected: string
   severity: Severity
   snippet: string
+  /** Человекочитаемая рекомендация по замене на токен дизайн-системы */
+  recommendation: string
+}
+
+export type ComponentRecommendation = {
+  id: string
+  file: string
+  line: number
+  /** Кастомный компонент, обнаруженный в проекте */
+  custom: string
+  /** Компонент из эталонной дизайн-системы для замены */
+  replacement: string
+  severity: Severity
+  snippet: string
+  /** Рекомендация по миграции на компонент дизайн-системы */
+  recommendation: string
 }
 
 export type A11yViolation = {
@@ -47,6 +63,8 @@ export const designViolations: DesignViolation[] = [
     expected: "var(--color-primary)",
     severity: "critical",
     snippet: 'className="bg-[#3b5bdb] text-white"',
+    recommendation:
+      "Замените произвольный HEX на токен фона bg-primary и текст text-primary-foreground.",
   },
   {
     id: "DS-002",
@@ -58,6 +76,8 @@ export const designViolations: DesignViolation[] = [
     expected: "space-3 (12px)",
     severity: "warning",
     snippet: "style={{ padding: '13px' }}",
+    recommendation:
+      "Уберите инлайн-стиль и используйте класс шкалы отступов p-3 (12px).",
   },
   {
     id: "DS-003",
@@ -69,6 +89,8 @@ export const designViolations: DesignViolation[] = [
     expected: "var(--radius-md)",
     severity: "info",
     snippet: 'className="rounded-[7px]"',
+    recommendation:
+      "Используйте токен скругления rounded-md вместо произвольного значения 7px.",
   },
   {
     id: "DS-004",
@@ -80,6 +102,8 @@ export const designViolations: DesignViolation[] = [
     expected: "text-3xl (30px)",
     severity: "warning",
     snippet: 'className="text-[31px] leading-[38px]"',
+    recommendation:
+      "Примените типографический токен text-3xl — он задаёт размер и line-height.",
   },
   {
     id: "DS-005",
@@ -91,6 +115,8 @@ export const designViolations: DesignViolation[] = [
     expected: "var(--color-foreground)",
     severity: "critical",
     snippet: "style={{ color: 'rgb(17, 24, 39)' }}",
+    recommendation:
+      "Замените RGB на семантический токен текста text-foreground.",
   },
   {
     id: "DS-006",
@@ -102,6 +128,8 @@ export const designViolations: DesignViolation[] = [
     expected: "shadow-md (token)",
     severity: "info",
     snippet: 'className="shadow-[0_2px_9px_rgba(0,0,0,.14)]"',
+    recommendation:
+      "Используйте токен тени shadow-md вместо произвольного box-shadow.",
   },
   {
     id: "DS-007",
@@ -113,6 +141,8 @@ export const designViolations: DesignViolation[] = [
     expected: "var(--color-critical)",
     severity: "warning",
     snippet: 'const errorColor = "#e11d48"',
+    recommendation:
+      "Используйте токен состояния ошибки var(--color-critical) вместо HEX.",
   },
   {
     id: "DS-008",
@@ -124,6 +154,66 @@ export const designViolations: DesignViolation[] = [
     expected: "space-5 (20px)",
     severity: "info",
     snippet: 'className="mt-[22px]"',
+    recommendation:
+      "Округлите до шкалы отступов и используйте mt-5 (20px).",
+  },
+]
+
+export const componentRecommendations: ComponentRecommendation[] = [
+  {
+    id: "CMP-001",
+    file: "components/checkout/pay-button.tsx",
+    line: 8,
+    custom: "<CustomButton>",
+    replacement: "<Button variant=\"primary\">",
+    severity: "critical",
+    snippet: '<CustomButton onClick={pay}>Оплатить</CustomButton>',
+    recommendation:
+      "Замените на компонент Button из дизайн-системы с variant=\"primary\" — он уже включает состояния hover/focus и токены цвета.",
+  },
+  {
+    id: "CMP-002",
+    file: "components/forms/field.tsx",
+    line: 22,
+    custom: "<TextInput>",
+    replacement: "<Input>",
+    severity: "warning",
+    snippet: '<TextInput className="border rounded p-2" />',
+    recommendation:
+      "Используйте Input из дизайн-системы — он связывает label/aria и наследует токены отступов и границ.",
+  },
+  {
+    id: "CMP-003",
+    file: "components/ui/card-box.tsx",
+    line: 5,
+    custom: "<CardBox>",
+    replacement: "<Card>",
+    severity: "warning",
+    snippet: '<CardBox style={{ boxShadow: "0 2px 9px" }}>',
+    recommendation:
+      "Замените на Card — он задаёт радиус, тень (shadow-md) и паддинги из токенов.",
+  },
+  {
+    id: "CMP-004",
+    file: "components/nav/pill.tsx",
+    line: 14,
+    custom: "<StatusPill>",
+    replacement: "<Badge>",
+    severity: "info",
+    snippet: '<StatusPill color="#16a34a">Активно</StatusPill>',
+    recommendation:
+      "Используйте Badge с variant=\"success\" вместо кастомного пилла с произвольным цветом.",
+  },
+  {
+    id: "CMP-005",
+    file: "components/modal/dialog.tsx",
+    line: 30,
+    custom: "<Popup>",
+    replacement: "<Dialog>",
+    severity: "critical",
+    snippet: '<Popup open={open}>{children}</Popup>',
+    recommendation:
+      "Замените на Dialog из дизайн-системы — он реализует focus-trap, overlay и ARIA-роли согласно паттерну.",
   },
 ]
 

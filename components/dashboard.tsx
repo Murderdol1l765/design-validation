@@ -12,6 +12,7 @@ import {
 import {
   meta,
   designViolations,
+  componentRecommendations,
   a11yViolations,
   type Severity,
 } from "@/lib/audit-data"
@@ -189,7 +190,10 @@ export function Dashboard() {
         className="focus:outline-none"
       >
         {tab === "design" ? (
-          <DesignTab violations={designViolations} />
+          <DesignTab
+            violations={designViolations}
+            recommendations={componentRecommendations}
+          />
         ) : (
           <A11yTab violations={a11yViolations} />
         )}
